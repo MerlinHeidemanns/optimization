@@ -2,6 +2,23 @@ import numpy as np
 import sys
 from matplotlib import pyplot as plt
 
+def gradient_descent(iter, alpha, epsilon):
+    x = np.random.normal(loc = 0, scale = 3, size=(1, 2))
+    path = np.array(x)
+    i = 0
+    flag = True
+    while i < iter and flag:
+        i += 1
+        gradient = np.array([[
+            2 * x[0, 0] + x[0, 1],
+            2 * x[0, 1] + x[0,0]
+        ]])
+        x = x - alpha * gradient
+        path = np.append(path, x, axis=0)
+        if abs(np.sum(gradient, axis = 1)) < epsilon:
+            flag = False
+    return path
+
 def power(x):
     return pow(x, 2)
 
@@ -9,6 +26,9 @@ class GD():
 
     def __init__(self):
         pass
+
+    def _power(self, x):
+        return pow(x, 2)
 
     def set_data(self, X, y):
         self.X = X
@@ -27,7 +47,7 @@ class GD():
             for k in range(self.K):
                 pd = 1/self.N * np.dot((np.matmul(self.X, self.b) - self.y)[:,0], self.X[:,k])
                 self.b[k] = self.b[k] - alpha * pd
-            loss = 0.5/self.N * np.sum(np.apply_along_axis(power, 1, np.matmul(self.X, self.b) - self.y))
+            loss = 0.5/self.N * np.sum(np.apply_along_axis(self._power, 1, np.matmul(self.X, self.b) - self.y))
             self.loss.append(loss)
             if loss < epsilon:
                 flag = False
